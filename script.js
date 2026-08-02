@@ -1,139 +1,141 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzmEAB5hNR3o4SXJRdW02HJ-Vv1y48So_JpdVPAh0EMKRrXW7hrwb3TANrVOwiN6OOc/exec'; // APNA URL YAHAN DALEIN
-let userData = { name: "", image: "", id: "FD-2026-" + Math.floor(Math.random()*900000) };
+const scriptURL = 'YOUR_APPS_SCRIPT_URL_HERE'; // APNA URL DALEIN
+let userData = { name: "", image: "", id: "FD-2026-" + Math.floor(100000 + Math.random() * 900000) };
 
 function nextStep(step) {
     document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-    document.getElementById(`step-${step}`).classList.add('active');
-    updateProgress(step);
-    
-    if(step === 1) setupCamera();
-    if(step === 2) runAIScan();
-    if(step === 6) runMeter();
+    const target = document.getElementById(`step-${step}`);
+    target.classList.add('active');
+
+    if(step === 1) initCamera();
+    if(step === 2) startAIScan();
+    if(step === 6) startMeter();
 }
 
-function updateProgress(step) {
-    const segs = document.querySelectorAll('.seg');
-    segs.forEach((s, i) => i <= step ? s.classList.add('active') : s.classList.remove('active'));
-}
-
-async function setupCamera() {
+// Camera Setup with Filter
+async function initCamera() {
     const video = document.getElementById('video');
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-    } catch (e) { alert("Camera access denied!"); }
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
 
-    document.getElementById('btn-capture').onclick = () => {
+    document.getElementById('capture-btn').onclick = () => {
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = 400; canvas.height = 400;
         
-        // Filter logic: Video draw karo + overlay text
+        // Applying Filter to captured image
+        ctx.filter = "sepia(0.2) saturate(1.5) hue-rotate(-20deg)";
         ctx.drawImage(video, 0, 0, 400, 400);
-        ctx.fillStyle = "rgba(142, 45, 226, 0.3)";
-        ctx.fillRect(0, 0, 400, 400);
-        ctx.fillStyle = "white";
-        ctx.font = "20px Outfit";
-        ctx.fillText("✨ Friendship Day 2026 ✨", 90, 380);
         
+        // Add Frame Text
+        ctx.filter = "none";
+        ctx.fillStyle = "rgba(142, 45, 226, 0.7)";
+        ctx.fillRect(0, 360, 400, 40);
+        ctx.fillStyle = "white";
+        ctx.font = "bold 18px Outfit";
+        ctx.fillText("✨ FRIENDSHIP DAY 2026 ✨", 80, 385);
+
         userData.image = canvas.toDataURL('image/png').split(',')[1];
         nextStep(2);
     };
 }
 
-function runAIScan() {
-    const status = document.getElementById('ai-status');
-    const logs = ["Initializing...", "Scanning smile...", "Checking happiness...", "Detecting positive energy...", "Calculating friendship level..."];
+// AI Scanner Hinglish
+function startAIScan() {
+    const logs = ["System initialize ho raha hai...", "Smile scan ki ja rahi hai...", "Happiness levels check ho rahe hain...", "Positive energy detect ho gayi!", "Friendship level: UNLIMITED"];
+    const logBox = document.getElementById('ai-logs');
     let i = 0;
-    let timer = setInterval(() => {
-        status.innerHTML += `<p>✅ ${logs[i]}</p>`;
+    const interval = setInterval(() => {
+        logBox.innerHTML += `<p style="color:#0f0; font-size:14px; text-align:left;">> ${logs[i]}</p>`;
         i++;
         if(i === logs.length) {
-            clearInterval(timer);
+            clearInterval(interval);
             document.getElementById('ai-result').classList.remove('hidden');
-            document.getElementById('ai-continue').classList.remove('hidden');
+            document.getElementById('ai-btn').classList.remove('hidden');
         }
-    }, 800);
+    }, 1000);
 }
 
-function processName() {
+// Name Handler
+function handleName() {
     userData.name = document.getElementById('userName').value;
-    if(!userData.name) return alert("Pehle naam toh likho!");
+    if(!userData.name) return alert("Pehle naam toh batao!");
     document.getElementById('greet-name').innerText = `Hey ${userData.name} ❤️`;
     nextStep(4);
-    typewriter();
+    startTypewriter();
 }
 
-function typewriter() {
+function startTypewriter() {
     const text = "Dosti sirf usse nahi kehte jise aap bachpan se jante ho... balki usse kehte hain jo aapka saath kabhi nahi chhodta.";
     let i = 0;
-    const box = document.getElementById('typewriter');
-    let timer = setInterval(() => {
-        box.innerHTML += text[i];
+    const target = document.getElementById('typewriter');
+    const timer = setInterval(() => {
+        target.innerText += text[i];
         i++;
-        if(i === text.length) { 
-            clearInterval(timer); 
-            setTimeout(() => nextStep(5), 2000); 
+        if(i === text.length) {
+            clearInterval(timer);
+            setTimeout(() => nextStep(5), 2500);
         }
     }, 50);
 }
 
-let cardsOpened = 0;
+// Cards Logic
+let cardsCount = 0;
 function openCard(el, msg) {
-    if(el.classList.contains('opened')) return;
-    el.classList.add('opened');
-    el.innerHTML = `<p style="font-size:12px; padding:10px;">"${msg}"</p>`;
-    cardsOpened++;
-    if(cardsOpened === 4) document.getElementById('card-continue').classList.remove('hidden');
+    if(el.classList.contains('open')) return;
+    el.classList.add('open');
+    el.innerHTML = `<p style="font-size:12px;">"${msg}"</p>`;
+    cardsCount++;
+    if(cardsCount === 4) document.getElementById('card-btn').classList.remove('hidden');
 }
 
-function runMeter() {
+// Meter Logic
+function startMeter() {
     let val = 0;
-    let fill = document.getElementById('meter-fill');
-    let text = document.getElementById('meter-text');
-    let timer = setInterval(() => {
-        val += Math.floor(Math.random()*5) + 2;
+    const fill = document.getElementById('meter-fill');
+    const num = document.getElementById('meter-num');
+    const interval = setInterval(() => {
+        val += Math.floor(Math.random()*7);
         if(val >= 100) {
-            val = 100; clearInterval(timer);
-            document.getElementById('meter-msg').innerText = "ERROR: UNLIMITED DOSTI FOUND ❤️";
+            val = 100;
+            clearInterval(interval);
+            document.getElementById('meter-status').innerText = "ERROR: UNLIMITED DOSTI FOUND! ❤️";
             confetti();
             setTimeout(() => nextStep(7), 2500);
         }
         fill.style.width = val + "%";
-        text.innerText = val + "%";
-    }, 100);
+        num.innerText = val + "%";
+    }, 150);
 }
 
 function openGift() {
-    document.querySelector('.gift-box-3d').style.display = 'none';
-    document.getElementById('gift-msg').classList.remove('hidden');
+    document.querySelector('.gift-container').classList.add('hidden');
+    document.getElementById('gift-reveal').classList.remove('hidden');
     confetti();
 }
 
+// Certificate & Sheet Fix
 function downloadCert() {
-    // Certificate values set karna
-    document.getElementById('cert-user-name').innerText = userData.name;
-    document.getElementById('c-id').innerText = userData.id;
-    document.getElementById('cert-img').src = "data:image/png;base64," + userData.image;
-    document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?data=${userData.id}`;
+    document.getElementById('c-name').innerText = userData.name;
+    document.getElementById('fid').innerText = "ID: " + userData.id;
+    document.getElementById('c-img').src = "data:image/png;base64," + userData.image;
+    document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${userData.id}`;
 
-    // Sheet me data bhejna (Fixing the data saving)
+    // Send Data to Sheet (No-Cors Fix)
     fetch(scriptURL, {
         method: 'POST',
-        mode: 'no-cors', // Ye allow karega background data sending
+        mode: 'no-cors',
         body: JSON.stringify(userData)
     });
 
-    // Capture Certificate
     html2canvas(document.querySelector("#certificate")).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'Dosti_Certificate.png';
-        link.href = canvas.toDataURL();
-        link.click();
+        const a = document.createElement('a');
+        a.download = 'Friendship_Certificate.png';
+        a.href = canvas.toDataURL();
+        a.click();
     });
 }
 
 function shareWA() {
-    let text = `Hey! Dekho mujhe Friendship Certificate mila hai! Tum bhi try karo: ${window.location.href}`;
+    const text = `Dekho mujhe sachi dosti ka certificate mila hai! Aap bhi check karo: ${window.location.href}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
 }
