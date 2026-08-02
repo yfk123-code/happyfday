@@ -16,7 +16,7 @@ async function openCam() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
-        window.currentStream = stream; // Save stream to close later
+        window.currentStream = stream; 
     } catch(e) { alert("Camera Permission Zaruri hai!"); }
 
     document.getElementById('cap-btn').onclick = () => {
@@ -28,8 +28,7 @@ async function openCam() {
         ctx.fillRect(0,0,400,400);
         uData.image = canvas.toDataURL('image/png').split(',')[1];
         
-        // Stop camera to save battery/resources
-        window.currentStream.getTracks().forEach(track => track.stop());
+        if(window.currentStream) window.currentStream.getTracks().forEach(track => track.stop());
         nextStep(2);
     };
 }
@@ -38,8 +37,9 @@ function aiScan() {
     const logs = ["Initializing AI...", "Scanning Smile...", "Happiness Check...", "Unlimited Dosti Detected!"];
     let i = 0;
     const box = document.getElementById('ai-logs');
+    box.innerHTML = ""; // Clear box before starting
     let timer = setInterval(() => {
-        box.innerHTML += `<p style="color:#0f0; margin:5px 0; font-size:14px;">> ${logs[i]}</p>`;
+        box.innerHTML += `<p style="color:#0f0; margin:5px 0; font-size:14px; text-align:left;">> ${logs[i]}</p>`;
         i++;
         if(i === logs.length) {
             clearInterval(timer);
@@ -57,26 +57,30 @@ function saveName() {
     startType();
 }
 
+// FIX: Spacing and Words Preserved
 function startType() {
     const txt = "Dosti wo nahi jo sirf waqt par saath de...\nBalki dosti wo hai jo har waqt\nsaath rehne ka wada kare.\n\nThank you for being there! ❤️";
     let i = 0;
     const box = document.getElementById('tp-box');
-    box.innerText = "";
+    box.textContent = ""; // box clear
+    
     let timer = setInterval(() => {
-        box.innerText += txt[i];
+        // textContent use karne se spacing sahi rehti hai
+        box.textContent += txt[i];
         i++;
         if(i === txt.length) {
             clearInterval(timer);
-            setTimeout(() => nextStep(5), 3000);
+            setTimeout(() => nextStep(5), 3500);
         }
-    }, 50);
+    }, 60); 
 }
 
 let pCount = 0;
 function pillClick(el, msg) {
     if(el.classList.contains('open')) return;
     el.classList.add('open');
-    el.innerHTML = `<p style="font-size:12px; padding:5px;">"${msg}"</p>`;
+    // Pillar click hone par clickable effect aur message display
+    el.innerHTML = `<p style="font-size:11px; padding:5px; font-weight:bold; line-height:1.4;">"${msg}"</p>`;
     pCount++;
     if(pCount === 4) document.getElementById('p-next').classList.remove('hidden');
 }
@@ -85,7 +89,12 @@ function runMeter() {
     let v = 0;
     let timer = setInterval(() => {
         v += Math.floor(Math.random()*6);
-        if(v >= 100) { v=100; clearInterval(timer); confetti(); setTimeout(()=>nextStep(7), 2000); }
+        if(v >= 100) { 
+            v=100; 
+            clearInterval(timer); 
+            confetti(); 
+            setTimeout(()=>nextStep(7), 2000); 
+        }
         document.getElementById('met-val').innerText = v + "%";
     }, 100);
 }
@@ -102,7 +111,7 @@ function genCert() {
     document.getElementById('c-img').src = "data:image/png;base64," + uData.image;
     document.getElementById('c-qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${uData.id}`;
     
-    // BACKEND SAVE
+    // BACKEND SAVE (Sheets + Drive)
     fetch(sheetURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(uData) });
     nextStep(8);
 }
@@ -110,7 +119,7 @@ function genCert() {
 function dlPNG() {
     html2canvas(document.querySelector("#certificate")).then(canvas => {
         const a = document.createElement('a');
-        a.download = uData.name + '_Dosti.png';
+        a.download = uData.name + '_Dosti_Certificate.png';
         a.href = canvas.toDataURL();
         a.click();
     });
@@ -119,6 +128,9 @@ function dlPNG() {
 function runTimer() {
     let t = 3;
     let box = document.getElementById('timer');
+    box.style.display = 'block';
+    box.innerText = t;
+    
     let timer = setInterval(() => {
         t--;
         box.innerText = t;
@@ -138,5 +150,5 @@ function waShare() {
 }
 
 function restart() {
-    location.reload(); // Best way to reset camera and state
+    location.reload(); 
 }
