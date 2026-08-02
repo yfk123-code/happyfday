@@ -3,142 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friendship Day Surprise ❤️</title>
+    <title>Friendship Surprise ❤️</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
-    <div class="bg-hearts"></div>
+    <div class="bg-overlay"></div>
 
-    <div id="main-container">
-        <!-- Landing Screen -->
+    <div id="app">
+        <!-- Landing -->
         <section id="step-0" class="active">
-            <h1 class="glow-text">👀 Koyi aapke liye kuch special laya hai...</h1>
-            <button class="btn-primary" onclick="nextStep(1)">Surprise Dekhein ❤️</button>
-            <p class="small-p">Best experienced with sound on 🎵</p>
+            <div class="floating-icons">❤️ ✨ 🤝</div>
+            <h1 class="main-title">Koyi aapke liye kuch <span class="highlight">Special</span> laya hai... 👀</h1>
+            <button class="btn-shine" onclick="nextStep(1)">Surprise Dekhein ❤️</button>
         </section>
 
-        <!-- Step 1: Camera -->
+        <!-- Camera -->
         <section id="step-1">
-            <span class="step-tag">STEP 1</span>
-            <h2>Ek pyari si Smile check 😊</h2>
-            <div class="camera-wrapper">
+            <h2 class="hinglish">Ek pyari si Smile check 😊</h2>
+            <div class="cam-container">
                 <video id="video" autoplay playsinline></video>
-                <div class="cam-filter">✨ FRIENDSHIP DAY ✨</div>
+                <div class="cam-overlay">✨ PREMIUM FRIENDSHIP ✨</div>
             </div>
-            <button class="btn-primary" id="capture-btn">Capture Smile 😊</button>
+            <button class="btn-shine" id="capture-btn">Capture Smile 😊</button>
             <canvas id="canvas" style="display:none;"></canvas>
         </section>
 
-        <!-- Step 2: AI Scan -->
+        <!-- AI Scanner -->
         <section id="step-2">
-            <span class="step-tag">STEP 2</span>
-            <div class="ai-box">
-                <div class="ai-header"><span class="dot"></span> Friendship AI v2.6</div>
+            <div class="ai-card">
+                <div class="ai-bar">Friendship AI v2.6</div>
                 <div id="ai-logs"></div>
-                <div id="ai-result" class="hidden">
-                    <p>FRIENDSHIP SCORE</p>
-                    <div class="infinity">∞</div>
-                    <p>Best Friend Detected ❤️</p>
+                <div id="ai-final" class="hidden">
+                    <p>SCORE</p>
+                    <div class="inf-icon">∞</div>
+                    <h3>Best Friend Detected ❤️</h3>
                 </div>
             </div>
-            <button class="btn-primary hidden" id="ai-btn" onclick="nextStep(3)">Aage Chalein →</button>
+            <button class="btn-shine hidden" id="ai-next" onclick="nextStep(3)">Aage Chalein →</button>
         </section>
 
-        <!-- Step 3: Name Input -->
+        <!-- Name Input -->
         <section id="step-3">
-            <span class="step-tag">STEP 3</span>
-            <h2>Aur hum kiski khushi mana rahe hain?</h2>
-            <p>Apna naam likhein — sab kuch sirf aapke liye hai.</p>
-            <input type="text" id="userName" placeholder="Yahan apna naam likhein..." class="neon-input">
-            <button class="btn-primary" onclick="handleName()">Continue →</button>
+            <h2>Aapka naam kya hai?</h2>
+            <p>Sab kuch sirf aapke liye customize ho raha hai.</p>
+            <input type="text" id="userName" placeholder="Yahan naam likhein..." class="glass-input">
+            <button class="btn-shine" onclick="handleName()">Continue →</button>
         </section>
 
-        <!-- Step 4: Personal Greeting -->
+        <!-- Greeting -->
         <section id="step-4">
-            <span class="step-tag">STEP 4</span>
-            <h1 id="greet-name">Hey Name ❤️</h1>
-            <p id="typewriter" class="type-box"></p>
+            <h1 id="greet-title">Hey! ❤️</h1>
+            <div id="typewriter" class="type-box"></div>
         </section>
 
-        <!-- Step 5: Friendship Cards -->
+        <!-- Friendship Cards -->
         <section id="step-5">
-            <span class="step-tag">STEP 5</span>
-            <h2>Dosti inhi cheezon se banti hai...</h2>
-            <p class="sub-text">Har card ko touch karke dekhein.</p>
+            <h3>Dosti ke 4 pillars...</h3>
             <div class="card-grid">
-                <div class="f-card" onclick="openCard(this, 'Aapki smile hi kafi hai mera din banane ke liye!')"><span>😊</span><p>Smile</p></div>
-                <div class="f-card" onclick="openCard(this, 'Ek sacha dost wahi hai jo har mushkil me saath de.')"><span>🤝</span><p>Trust</p></div>
-                <div class="f-card" onclick="openCard(this, 'Life me fun tabhi hai jab dost saath hon!')"><span>🎉</span><p>Fun</p></div>
-                <div class="f-card" onclick="openCard(this, 'Hamari yaadein hamesha mere dil ke paas rahengi.')"><span>💙</span><p>Memories</p></div>
+                <div class="f-card" onclick="tapCard(this, 'Aapki smile dunya ki best cheez hai!')"><span>😊</span><p>Smile</p></div>
+                <div class="f-card" onclick="tapCard(this, 'Trust wahi jo kabhi na toote.')"><span>🤝</span><p>Trust</p></div>
+                <div class="f-card" onclick="tapCard(this, 'Har pal fun, jab tum saath ho.')"><span>🎉</span><p>Fun</p></div>
+                <div class="f-card" onclick="tapCard(this, 'Ye yaadein hamesha yaad rahengi.')"><span>💙</span><p>Memories</p></div>
             </div>
-            <button class="btn-primary hidden" id="card-btn" onclick="nextStep(6)">Aage Chalein →</button>
+            <button class="btn-shine hidden" id="card-next" onclick="nextStep(6)">Aage Chalein →</button>
         </section>
 
-        <!-- Step 6: Meter -->
+        <!-- Meter -->
         <section id="step-6">
-            <span class="step-tag">STEP 6</span>
-            <h2>Measuring Friendship Meter...</h2>
-            <div class="meter-val" id="meter-num">0%</div>
-            <div class="meter-bar"><div id="meter-fill"></div></div>
-            <p id="meter-status">Shared memories scan ho rahi hain...</p>
+            <h2>Friendship Meter...</h2>
+            <div class="meter-circle">
+                <span id="meter-num">0%</span>
+            </div>
+            <p id="meter-msg">Calculating shared moments...</p>
         </section>
 
-        <!-- Step 7: Gift Box -->
+        <!-- Gift -->
         <section id="step-7">
-            <span class="step-tag">STEP 7</span>
-            <h2>One more thing...</h2>
-            <div class="gift-container" onclick="openGift()">
-                <div class="gift-box">🎁</div>
-                <p>Tap the gift to open it</p>
-            </div>
+            <h2>Surprise Khulne Wala Hai!</h2>
+            <div class="gift-box" onclick="openGift()">🎁</div>
             <div id="gift-reveal" class="hidden">
-                <div class="glass-msg">You're one of my Favourite People ❤️</div>
-                <button class="btn-primary" onclick="nextStep(8)">Certificate Dekhein →</button>
+                <div class="msg-bubble">You're one of my Favourite People ❤️</div>
+                <button class="btn-shine" onclick="prepareCertificate()">Show Certificate →</button>
             </div>
         </section>
 
-        <!-- Step 8: Certificate -->
+        <!-- Certificate -->
         <section id="step-8">
-            <span class="step-tag">STEP 8</span>
-            <h2>Aapka certificate taiyar hai 🎓</h2>
-            <div id="cert-wrapper">
+            <div id="cert-box">
                 <div id="certificate">
-                    <div class="cert-top"><span>CERTIFICATE OF</span> <span id="fid">FD-2026-X</span></div>
-                    <h1 class="cert-title">Genuine Friendship</h1>
-                    <h2 id="c-name">User Name</h2>
-                    <div class="cert-body">
-                        <img id="c-img" src="">
-                        <p>This certifies that the above is officially one of the best ones — issued on Friendship Day 2026 for outstanding loyalty and replying to texts.</p>
+                    <div class="cert-header">CERTIFICATE OF DOSTI <span id="cert-id"></span></div>
+                    <h1 class="cert-main-title">Genuine Friendship</h1>
+                    <div class="cert-user-section">
+                        <img id="cert-user-img" src="" alt="Smile">
+                        <h2 id="cert-user-name">User Name</h2>
                     </div>
-                    <div class="cert-foot">
-                        <div>
-                            <p>Issued by: Pathan Yousuf Khan</p>
-                            <p>Date: 02 August 2026</p>
-                        </div>
-                        <img id="qr" src="">
+                    <p class="cert-desc">Ye certify karta hai ki upar diye gaye insaan ki dosti sachi aur sabse alag hai. Happy Friendship Day 2026!</p>
+                    <div class="cert-footer">
+                        <div class="issuer">Issued by: <b>Pathan Yousuf Khan</b></div>
+                        <img id="cert-qr" src="" alt="QR">
                     </div>
                 </div>
             </div>
-            <div class="cert-btns">
-                <button class="btn-primary" onclick="downloadCert()">Download PNG 📥</button>
-                <button class="btn-primary share" onclick="shareWA()">Share WhatsApp 💬</button>
+            <div class="cert-action-btns">
+                <button class="btn-shine" onclick="downloadCert()">Download PNG 📥</button>
+                <button class="btn-shine wa" onclick="shareWA()">WhatsApp 💬</button>
             </div>
-            <button class="btn-ghost" onclick="nextStep(9)">Continue →</button>
+            <button class="btn-link" onclick="nextStep(9)">Continue →</button>
         </section>
 
-        <!-- Step 9: Final Reveal -->
+        <!-- Final Reveal -->
         <section id="step-9">
-            <h2 id="guess-text">Guess... ye kisne banaya?</h2>
-            <div id="countdown">3</div>
-            <div id="final-creator" class="hidden">
+            <h2 id="final-q">Guess... ye kisne banaya?</h2>
+            <div id="final-timer">3</div>
+            <div id="creator-box" class="hidden">
                 <p>Created with ❤️ by</p>
-                <h1 class="name-glow">Pathan Yousuf Khan</h1>
-                <button class="btn-primary" onclick="location.reload()">Play it again</button>
+                <h1 class="creator-name">Pathan Yousuf Khan</h1>
+                <button class="btn-shine" onclick="location.reload()">Reset</button>
             </div>
         </section>
     </div>
