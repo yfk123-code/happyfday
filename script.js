@@ -1,64 +1,66 @@
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzmEAB5hNR3o4SXJRdW02HJ-Vv1y48So_JpdVPAh0EMKRrXW7hrwb3TANrVOwiN6OOc/exec'; // PASTE NEW URL HERE
-let userData = { name: "", image: "", id: "FD-2026-" + Math.floor(100000 + Math.random() * 900000) };
+const sheetURL = 'APNA_APPS_SCRIPT_URL_YAHAN_DALEIN'; 
+let uData = { name: "", image: "", id: "FD-2026-" + Math.floor(100000 + Math.random() * 899999) };
 
-function nextStep(step) {
-    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-    document.getElementById(`step-${step}`).classList.add('active');
+function nextStep(s) {
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(`step-${s}`).classList.add('active');
 
-    if(step === 1) startCamera();
-    if(step === 2) startAIScan();
-    if(step === 6) startMeter();
-    if(step === 9) startFinalCounter();
+    if(s === 1) openCam();
+    if(s === 2) aiScan();
+    if(s === 6) runMeter();
+    if(s === 9) runTimer();
 }
 
-// Camera with Auto-Focus
-async function startCamera() {
+async function openCam() {
     const video = document.getElementById('video');
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    video.srcObject = stream;
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        window.currentStream = stream; // Save stream to close later
+    } catch(e) { alert("Camera Permission Zaruri hai!"); }
 
-    document.getElementById('capture-btn').onclick = () => {
+    document.getElementById('cap-btn').onclick = () => {
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = 400; canvas.height = 400;
         ctx.drawImage(video, 0, 0, 400, 400);
+        ctx.fillStyle = "rgba(188, 19, 254, 0.1)";
+        ctx.fillRect(0,0,400,400);
+        uData.image = canvas.toDataURL('image/png').split(',')[1];
         
-        // Apply Filter directly to data
-        ctx.fillStyle = "rgba(188, 19, 254, 0.15)";
-        ctx.fillRect(0, 0, 400, 400);
-        
-        userData.image = canvas.toDataURL('image/png').split(',')[1];
+        // Stop camera to save battery/resources
+        window.currentStream.getTracks().forEach(track => track.stop());
         nextStep(2);
     };
 }
 
-function startAIScan() {
-    const logBox = document.getElementById('ai-logs');
-    const msgs = ["Initializing Dosti-Core...", "Smile quality: Excellent!", "Scanning memories...", "Positive vibes detected!", "Friendship level: INFINITE!"];
+function aiScan() {
+    const logs = ["Initializing AI...", "Scanning Smile...", "Happiness Check...", "Unlimited Dosti Detected!"];
     let i = 0;
+    const box = document.getElementById('ai-logs');
     let timer = setInterval(() => {
-        logBox.innerHTML += `<p style="color:#bc13fe; font-size:14px;">> ${msgs[i]}</p>`;
+        box.innerHTML += `<p style="color:#0f0; margin:5px 0; font-size:14px;">> ${logs[i]}</p>`;
         i++;
-        if(i === msgs.length) {
+        if(i === logs.length) {
             clearInterval(timer);
-            document.getElementById('ai-final').classList.remove('hidden');
+            document.getElementById('ai-res').classList.remove('hidden');
             document.getElementById('ai-next').classList.remove('hidden');
         }
-    }, 800);
+    }, 1000);
 }
 
-function handleName() {
-    userData.name = document.getElementById('userName').value;
-    if(!userData.name) return alert("Bhai, naam toh likho!");
-    document.getElementById('greet-title').innerText = `Hey ${userData.name}! ❤️`;
+function saveName() {
+    uData.name = document.getElementById('userName').value;
+    if(!uData.name) return alert("Pehle naam toh likho!");
+    document.getElementById('hi-name').innerText = `Hey ${uData.name}! ❤️`;
     nextStep(4);
-    typewriter();
+    startType();
 }
 
-function typewriter() {
-    const txt = "Dosti wo nahi jo sirf waqt par saath de... dosti wo hai jo har waqt saath rehne ka wada kare. Thank you for being there! ❤️";
+function startType() {
+    const txt = "Dosti wo nahi jo sirf waqt par saath de...\nBalki dosti wo hai jo har waqt\nsaath rehne ka wada kare.\n\nThank you for being there! ❤️";
     let i = 0;
-    const box = document.getElementById('typewriter');
+    const box = document.getElementById('tp-box');
     box.innerText = "";
     let timer = setInterval(() => {
         box.innerText += txt[i];
@@ -67,79 +69,74 @@ function typewriter() {
             clearInterval(timer);
             setTimeout(() => nextStep(5), 3000);
         }
-    }, 40);
+    }, 50);
 }
 
-// Prepare Certificate BEFORE showing it
-function prepareCertificate() {
-    document.getElementById('cert-user-name').innerText = userData.name;
-    document.getElementById('cert-id').innerText = "ID: " + userData.id;
-    document.getElementById('cert-user-img').src = "data:image/png;base64," + userData.image;
-    document.getElementById('cert-qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${userData.id}`;
-    
-    // Save to Sheet (Fire and Forget)
-    fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: JSON.stringify(userData)
-    });
-    
-    nextStep(8);
+let pCount = 0;
+function pillClick(el, msg) {
+    if(el.classList.contains('open')) return;
+    el.classList.add('open');
+    el.innerHTML = `<p style="font-size:12px; padding:5px;">"${msg}"</p>`;
+    pCount++;
+    if(pCount === 4) document.getElementById('p-next').classList.remove('hidden');
 }
 
-function startMeter() {
-    let val = 0;
+function runMeter() {
+    let v = 0;
     let timer = setInterval(() => {
-        val += Math.floor(Math.random() * 5);
-        if(val >= 100) {
-            val = 100; clearInterval(timer);
-            confetti();
-            setTimeout(() => nextStep(7), 2000);
-        }
-        document.getElementById('meter-num').innerText = val + "%";
+        v += Math.floor(Math.random()*6);
+        if(v >= 100) { v=100; clearInterval(timer); confetti(); setTimeout(()=>nextStep(7), 2000); }
+        document.getElementById('met-val').innerText = v + "%";
     }, 100);
 }
 
 function openGift() {
-    document.querySelector('.gift-box').style.display = 'none';
-    document.getElementById('gift-reveal').classList.remove('hidden');
+    document.querySelector('.big-gift').style.display = 'none';
+    document.getElementById('gift-res').classList.remove('hidden');
     confetti();
 }
 
-function downloadCert() {
+function genCert() {
+    document.getElementById('c-name').innerText = uData.name;
+    document.getElementById('cid').innerText = "ID: " + uData.id;
+    document.getElementById('c-img').src = "data:image/png;base64," + uData.image;
+    document.getElementById('c-qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${uData.id}`;
+    
+    // BACKEND SAVE
+    fetch(sheetURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(uData) });
+    nextStep(8);
+}
+
+function dlPNG() {
     html2canvas(document.querySelector("#certificate")).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `${userData.name}_Friendship_Certificate.png`;
-        link.href = canvas.toDataURL();
-        link.click();
+        const a = document.createElement('a');
+        a.download = uData.name + '_Dosti.png';
+        a.href = canvas.toDataURL();
+        a.click();
     });
 }
 
-function startFinalCounter() {
-    let time = 3;
-    const box = document.getElementById('final-timer');
+function runTimer() {
+    let t = 3;
+    let box = document.getElementById('timer');
     let timer = setInterval(() => {
-        time--;
-        box.innerText = time;
-        if(time === 0) {
+        t--;
+        box.innerText = t;
+        if(t === 0) {
             clearInterval(timer);
             box.style.display = 'none';
-            document.getElementById('final-q').style.display = 'none';
-            document.getElementById('creator-box').classList.remove('hidden');
+            document.getElementById('q-text').style.display = 'none';
+            document.getElementById('fin-box').classList.remove('hidden');
             confetti();
         }
     }, 1000);
 }
 
-function tapCard(el, msg) {
-    if(el.classList.contains('opened')) return;
-    el.classList.add('opened');
-    el.innerHTML = `<p style="font-size:12px;">"${msg}"</p>`;
-    if(document.querySelectorAll('.f-card.opened').length === 4) 
-        document.getElementById('card-next').classList.remove('hidden');
+function waShare() {
+    const t = `Dekho mujhe sachi dosti ka certificate mila hai: ${window.location.href}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(t)}`);
 }
 
-function shareWA() {
-    const txt = `Dekh! Mujhe sachi dosti ka certificate mila hai. Tu bhi try kar: ${window.location.href}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`);
+function restart() {
+    location.reload(); // Best way to reset camera and state
 }
