@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friendship Day Special ❤️</title>
+    <title>Friendship Day Surprise ❤️</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -19,7 +19,7 @@
             <button class="btn-main" onclick="nextStep(1)">Surprise Dekhein ❤️</button>
         </section>
 
-        <!-- Camera -->
+        <!-- Step 1: Camera -->
         <section id="step-1">
             <h2 class="hinglish">Ek pyari si Smile check 😊</h2>
             <div class="cam-box">
@@ -30,7 +30,7 @@
             <canvas id="canvas" style="display:none;"></canvas>
         </section>
 
-        <!-- AI Scan -->
+        <!-- Step 2: AI Scan -->
         <section id="step-2">
             <div class="glass-card ai-box">
                 <div class="ai-head">Friendship AI v2.6</div>
@@ -44,7 +44,7 @@
             <button class="btn-main hidden" id="ai-next" onclick="nextStep(3)">Aage Chalein →</button>
         </section>
 
-        <!-- Name Input (UI FIXED) -->
+        <!-- Step 3: Name Input -->
         <section id="step-3">
             <h2 class="hinglish">Aapka naam kya hai?</h2>
             <p>Sab kuch sirf aapke liye customize ho raha hai.</p>
@@ -54,13 +54,13 @@
             <button class="btn-main" onclick="saveName()">Continue →</button>
         </section>
 
-        <!-- Greeting (TEXT SPACING FIXED) -->
+        <!-- Step 4: Greeting -->
         <section id="step-4">
             <h1 id="hi-name">Hey! ❤️</h1>
             <div id="tp-box" class="typewriter-text"></div>
         </section>
 
-        <!-- Pillars (BOXES FIXED) -->
+        <!-- Step 5: Pillars -->
         <section id="step-5">
             <h3 class="hinglish">Dosti ke 4 pillars...</h3>
             <p class="instr">Niche diye gaye saare box par click karein:</p>
@@ -73,7 +73,7 @@
             <button class="btn-main hidden" id="p-next" onclick="nextStep(6)">Aage Chalein →</button>
         </section>
 
-        <!-- Meter -->
+        <!-- Step 6: Meter -->
         <section id="step-6">
             <h2 class="hinglish">Dosti ka Meter Check...</h2>
             <div class="circle-meter">
@@ -82,7 +82,7 @@
             <p id="met-msg">Shared moments calculate ho rahe hain...</p>
         </section>
 
-        <!-- Gift (BIGGER BOX) -->
+        <!-- Step 7: Gift -->
         <section id="step-7">
             <h2 class="hinglish">Surprise Khulne Wala Hai!</h2>
             <div class="big-gift" onclick="openGift()">🎁</div>
@@ -92,33 +92,31 @@
             </div>
         </section>
 
-        <!-- Certificate (UI FIT FIXED) -->
-        <!-- Step 8: Certificate Page -->
-<section id="step-8">
-    <div id="cert-area">
-        <div id="certificate">
-            <div class="c-head">CERTIFICATE OF DOSTI</div>
-            <div class="c-id" id="cid">ID: FD-000</div>
-            <div class="c-user">
-                <img id="c-img" src="">
-                <h2 id="c-name">User Name</h2>
+        <!-- Step 8: Certificate -->
+        <section id="step-8">
+            <div id="cert-area">
+                <div id="certificate">
+                    <div class="c-head">CERTIFICATE OF DOSTI</div>
+                    <div class="c-id" id="cid">ID: FD-000</div>
+                    <div class="c-user">
+                        <img id="c-img" src="">
+                        <h2 id="c-name">User Name</h2>
+                    </div>
+                    <p class="c-text">Ye sachi dosti ka praman hai. <br>Happy Friendship Day 2026!</p>
+                    <div class="c-foot">
+                        <p>Issued by: <b>Pathan Yousuf Khan</b></p>
+                        <img id="c-qr" src="">
+                    </div>
+                </div>
             </div>
-            <p class="c-text">Ye sachi dosti ka praman hai. <br>Happy Friendship Day 2026!</p>
-            <div class="c-foot">
-                <p>Issued by: <b>Pathan Yousuf Khan</b></p>
-                <img id="c-qr" src="">
+            <div class="act-btns">
+                <button class="btn-main dl" onclick="dlPNG()">Download PNG</button>
+                <button class="btn-main wa" onclick="waShare()">WhatsApp</button>
             </div>
-        </div>
-    </div>
-    <div class="act-btns">
-        <button class="btn-main dl" onclick="dlPNG()">Download PNG</button>
-        <button class="btn-main wa" onclick="waShare()">WhatsApp</button>
-    </div>
-    <!-- Continue Button Fixed UI -->
-    <button class="btn-main secondary-btn" onclick="nextStep(9)">Continue →</button>
-</section>
+            <button class="btn-main secondary-btn" onclick="nextStep(9)">Continue →</button>
+        </section>
 
-        <!-- Final Reveal -->
+        <!-- Step 9: Final Reveal -->
         <section id="step-9">
             <h2 id="q-text">Guess... ye kisne banaya?</h2>
             <div id="timer">3</div>
